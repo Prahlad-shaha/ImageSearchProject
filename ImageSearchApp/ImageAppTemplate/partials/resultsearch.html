@@ -1,0 +1,56 @@
+          <div class="row">
+
+            <div class="col-lg-4">
+
+              <!-- Circle Buttons -->
+              <div class="card shadow mb-4">
+                <div class="card-header">
+                  <h6 class="m-0 font-weight-bold text-primary">Original Image</h6>
+                </div>
+                <div class="card-body">
+                  <div style="">
+                      <!-- {% comment %} <img src="http://127.0.0.1{{ displayFile }}" alt="Original Image" style="max-height: 100%; max-width: 100%"> {% endcomment %} -->
+                      <img class="card-img-top" src="{{ uploaded_img_path }}" alt="Original Image">
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <div class="col-lg-8">
+                <!-- {% comment %} start card body-2  {% endcomment %} -->
+                <div class="card shadow mb-4">
+                  <div class="card-body">
+                    <h5 class="card-title border border-top-0 border-left-0 border-right-0">Image Information</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Brand Foundation</h6>
+                    <p class="card-text text-justify">{{ brand_info.0 }}</p>
+                    <a href="{{brand_info.1}}" class="card-link">Brand Owner</a>
+                    <a href="#" class="card-link">Related Images</a>
+                  </div>
+                </div>
+                <!-- {% comment %} end card body-2 {% endcomment %} -->
+            </div>
+          </div>
+
+          
+        <div class="card text-center shadow mb-4">
+          <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Similar Images:</h6>
+          </div>
+          <div class="card-columns">
+          {% for img, imgclass in zipped_list  %}
+            <div class="card">
+              <img class="card-img-top" src="{{img}}" alt="Card image cap">
+              <div class="card-body">
+               <a href="https://www.google.com/search?q={{imgclass}}" target="_blank"> 
+                <h5 class="card-title">{{imgclass}}</h5>
+                To Know more about the brand owners and their success story follow the link.</p>
+               </a>
+                <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+              </div>
+            </div>
+          {% endfor %}
+          </div>
+        </div>
+
+
+  

@@ -1,0 +1,13 @@
+./imagesearchproject/media
+/imagesearchproject/media/img/*
+/imagesearchproject/media/uploads/*
+/media/*
+/AuthenticationApp/__pycache__/*
+media/Flickr_32/
+media/feature/
+media/img/
+media/user_profiles
+ImageSearchApp/__pycache__
+ImageSearchProject/__pycache__
+AdminApp/__pycache__
+accounts/__pycache__

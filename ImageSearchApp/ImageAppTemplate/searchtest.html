@@ -1,0 +1,48 @@
+{% load static %}
+<!doctype html>
+<html>
+    <head><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"></head>
+    <body>
+        {% comment %} <div class="container">
+            <h1>Simple image search engine</h1>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="file" name="query_img"><br>
+                <input type="submit">
+            </form>
+            <h2>Query:</h2>
+            {% if uploaded_img_path %}
+            <img src="{{ uploaded_img_path }}" width="300px">
+            {% endif %}
+            <h2>Results:</h2>
+            {% for score in scores %}
+            <figure style="float: left; margin-right: 20px; margin-bottom: 20px;">
+                <img src=" {{ score.1 }} "  height="200px">
+                <figcaption>{{ score.0 }}</figcaption>
+                <figurename>{{ score.1.name }}</figurename>
+            </figure>
+            {% endfor %}
+
+        </div>
+        <figurename>{{ score.1.name }}</figurename> {% endcomment %}
+
+        <h1>Prahlad Shah</h1>
+        <h2>{{brand_names}}</h2>
+        <form action="" method="post" >
+            {% csrf_token %}
+            <label for="search">Search</label>
+            <input type="text" name="searchbox" required>
+            <input type="submit">
+        </form>
+
+        <h2> {{error_message}} </h2>
+        <a href="https://www.google.com/search?q={{brand_names.1}}&" target="_blank">For the brand Owners information </a>
+{% comment %} 
+        {% for image in image_url  %}
+        <img src="{{image}}" alt="">
+        {% endfor %} {% endcomment %}
+        
+        {% comment %} <h2> {{image_url}} </h2> {% endcomment %}
+
+    </body>
+</html>

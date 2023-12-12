@@ -1,0 +1,86 @@
+{% load static %}
+{% load widget_tweaks %}
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head -->
+{% include "partials/head.html" %}
+<!-- End of Head -->
+
+<body id="page-top" class="bg-gradient-primary">
+
+  <!-- Begin Create Account -->
+  <div class="card o-hidden border-0 shadow-lg mx-auto my-4">
+    <div class="card-body p-0">
+      <!-- Nested Row within Card Body -->
+      <div class="row">
+        <div class="col-lg-5 d-none d-lg-block" style="  background-image: url(' {% static 'pymage/img/registration-image.jpg' %} ');
+        background-position: center;
+        background-size: cover;"></div>
+        <div class="col-lg-7">
+          <div class="p-5">
+            <div class="text-center">
+              <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
+              <div class="no-arrow">{{ form.non_field_errors }}</div>
+            </div>
+            <form class="user" action="" method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+              <div class="form-group row">
+                <div class="col-sm-6 mb-3 mb-sm-0">
+                  {% render_field form.first_name placeholder=form.first_name.label class+="form-control form-control-user" %}
+                </div>
+                <div class="col-sm-6">
+                  {% render_field form.last_name placeholder=form.last_name.label class+="form-control form-control-user" %}
+                </div>
+              </div>
+              <div class="form-group row">
+                <div class="col-sm-6 mb-3 mb-sm-0">
+                  {% render_field form.email placeholder=form.email.label class+="form-control form-control-user" %}
+                </div>
+                <div class="col-sm-6">
+                  {% render_field form.username placeholder=form.username.label class+="form-control form-control-user" %}
+                </div>
+              </div>
+              <div class="form-group row">
+                {% render_field form.profileIMG placeholder=form.profileIMG.label class+="form-control" %}
+                <div class="col-sm-6 mt-2">Choose Profile Picture</div>
+              </div>
+              <div class="form-group row">
+                <div class="col-sm-6 mb-3 mb-sm-0">
+                  {% render_field form.password1 placeholder=form.password2.label class+="form-control form-control-user" %}
+                </div>
+                <div class="col-sm-6">
+                  {% render_field form.password2 placeholder="Re-Enter The Password" class+="form-control form-control-user" %}
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary btn-user btn-block">
+                Register Account
+              </button>
+            </form>
+            <hr>
+            <a href="index.html" class="btn btn-google btn-user btn-block">
+              <i class="fab fa-google fa-fw"></i> Register with Google
+            </a>
+            <a href="index.html" class="btn btn-facebook btn-user btn-block">
+              <i class="fab fa-facebook-f fa-fw"></i> Register with Facebook
+            </a>
+            <hr>
+            <div class="text-center">
+              <a class="small" href="{% url 'AuthenticationApp:reset_password'  %}">Forgot Password?</a>
+            </div>
+            <div class="text-center">
+              <a class="small" href="{% url 'AuthenticationApp:login'  %}">Already have an account? Login!</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Create Account -->
+
+  <!-- Bootstrap & JavaScript Plugins-->
+  {% include "partials/plugin.html" %}
+
+</body>
+
+</html>
