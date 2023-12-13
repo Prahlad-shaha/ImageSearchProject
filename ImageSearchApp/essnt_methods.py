@@ -154,8 +154,39 @@ class WebScraping():
         return list(exactURL)
         
         
-        
+    def wikipediaScraping(brand_name):
+        # brand_name = str(brand_name).upper()
+        URL = f'https://en.wikipedia.org/wiki/{brand_name}'
+        res = requests.get(URL)
+        soup = BeautifulSoup(res.content, 'html5lib')
+        context = soup.find('div', attrs = {'id' : 'mw-content-text'})
+        brand_info = []
+        for body in context.find_all('p'):
+            # print(body.text)
+            brand_info.append(body.text)
+        # print(brand_info[2])
+        return brand_info
+    
+    def googleScraping(brand_name):
+        brand_name = str(brand_name)
+        url = f'https://www.google.com/search?q={brand_name}'
+        res = requests.get(url)
+        soup = BeautifulSoup(res.content, 'html5lib')
+        links = soup.find('div', attrs = {'id' : 'main'})
 
-		
+        cite = links.find_all_next('a')
+        og_links = []
+        original_links = []
+        for ci in cite: 
+            li = ci.get('href')
+            # print(li)
+            if '/url?q' in li:
+                og_links.append(li)
+        for link in og_links:
+            rem = link.removeprefix('/url?q=')
+            original_links.append(rem)
+        # print(original_links)
+        return original_links
+
 
     

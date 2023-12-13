@@ -383,7 +383,9 @@ def searchFlickrData(request):
         brand_info_link = company_info_obj.brand_Info(splitClassName)
         queried_accuracy = company_info_obj.queriedAccuracy(splitClassName)
         
-        exactURL = WebScraping.getBrandURL(splitClassName[1])
+        exactURL = WebScraping.googleScraping(splitClassName[1])
+        brand_info = WebScraping.wikipediaScraping(splitClassName[1])
+        exactURList = WebScraping.getBrandURL(splitClassName[1])
         
         zipped_list = zip(k_neighbours, splitClassName)
         
@@ -391,8 +393,9 @@ def searchFlickrData(request):
                   {'uploaded_img_path' : uploaded_img_rel_path, 'query_image_feature' : query_image,
                     'filenames': relfilenames, 'filenames_length': filenames_length, 'k_neighbours':k_neighbours,
                     'searchActive': searchActive, 'pageTitle': pageTitle, 'pageStatus': pageStatus, 'zipped_list':zipped_list, 
-                    'brand_info': brand_info_link, 'relative_path_profile': relative_path_profile,
-                    'companyInfo_list': companyInfo_list, 'queried_accuracy': queried_accuracy, 'exactURL':exactURL,})
+                    'brand_info_link': brand_info_link, 'relative_path_profile': relative_path_profile,
+                    'companyInfo_list': companyInfo_list, 'queried_accuracy': queried_accuracy, 'exactURL':exactURL,
+                    'brand_info':brand_info, 'exactURList':exactURList,})
 
     else:
         return render(request, 'imagesearch.html',{'media_root': settings.MEDIA_ROOT,

@@ -211,6 +211,7 @@
       </li>
       {% endif %}
   </ul>
+</nav>
 {% else %}
 <nav class="navbar navbar-expand navbar-dark bg-dark topbar mb-4 static-top shadow">
   <!-- Sidebar Toggle (Topbar) -->
@@ -219,19 +220,29 @@
   </button>
   <ul class="navbar-nav ml-auto" >
     <li class="nav-item no-arrow">
+        <a class="nav-link" href="{% url 'accounts:home'  %}" id="" role="button">
+        <span class="mr-2 d-none d-lg-inline text-dark-600"><strong>Home</strong></span>
+        </a>
+    </li>
+    <li class="nav-item no-arrow">
       <a class="nav-link" href="{% url 'accounts:login'  %}" id="" role="button">
-      <span class="mr-2 d-none d-lg-inline text-dark-600">Login</span>
+      <span class="mr-2 d-none d-lg-inline text-dark-600"><strong>Login</strong></span>
       </a>
     </li>
     <li class="nav-item no-arrow">
       <a class="nav-link" href="{% url 'accounts:signup'  %}" id="" role="button">
-      <span class="mr-2 d-none d-lg-inline text-dark-600">Sign Up</span>
+      <span class="mr-2 d-none d-lg-inline text-dark-600"><strong>Sign Up</strong></span>
       </a>
     </li>
+    <li class="nav-item no-arrow">
+        <a class="nav-link" href="{% url 'accounts:login'  %}" id="" role="button">
+        <span class="mr-2 d-none d-lg-inline text-dark-600"><strong>About</strong></span>
+        </a>
+    </li>
   </ul>
+</nav>
 {% endif %}
 
-</nav>
 <!-- End of Topbar -->
 
 <!-- Logout Modal-->
