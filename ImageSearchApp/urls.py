@@ -19,6 +19,7 @@ urlpatterns = [
     path('textbasedsearch', views.textbasedsearch, name='textbasedsearch'),
     path('textsearch', views.textualSearch, name='textsearch'),
     path('topcompany', views.topCompanyList, name = 'topcompany'),
+    path('testpage', views.testPageFor150, name='testpage'),
 
 ]
 

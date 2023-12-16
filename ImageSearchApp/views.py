@@ -373,29 +373,31 @@ def searchFlickrData(request):
 
         query_image = query_image_obj.extract_features(path)
         k_neighbours = query_image_obj.knnMethod(query_image)
+        mixedimages = query_image_obj.findExactSimilar(k_neighbours)
+        exactsimilar = mixedimages['exactsimilar']
+        quitesimilar = mixedimages['quitsimilar']
+        exactclassnames = mixedimages['exactclassnames']
+        quitesimilarclassnames = mixedimages['quitesimilarclassnames']
         
-        splitClassName = []
-        for filepath in k_neighbours:
-            splitClassText = filepath.split('/')[-2]
-            splitClassName.append(splitClassText)
              
-        companyInfo_list = company_info_obj.Infolist(splitClassName)
-        brand_info_link = company_info_obj.brand_Info(splitClassName)
-        queried_accuracy = company_info_obj.queriedAccuracy(splitClassName)
+        companyInfo_list = company_info_obj.Infolist(exactclassnames)
+        brand_info_link = company_info_obj.brand_Info(exactclassnames)
+        # queried_accuracy = company_info_obj.queriedAccuracy(splitClassName)
         
-        exactURL = WebScraping.googleScraping(splitClassName[1])
-        brand_info = WebScraping.wikipediaScraping(splitClassName[1])
-        exactURList = WebScraping.getBrandURL(splitClassName[1])
+        exactURL = WebScraping.googleScraping(exactclassnames[1])
+        brand_info = WebScraping.wikipediaScraping(exactclassnames[1])
+        exactURList = WebScraping.getBrandURL(exactclassnames[1])
         
-        zipped_list = zip(k_neighbours, splitClassName)
+        zipped_list = zip(exactsimilar, exactclassnames)
         
         return render(request, 'imagesearch.html', 
                   {'uploaded_img_path' : uploaded_img_rel_path, 'query_image_feature' : query_image,
                     'filenames': relfilenames, 'filenames_length': filenames_length, 'k_neighbours':k_neighbours,
                     'searchActive': searchActive, 'pageTitle': pageTitle, 'pageStatus': pageStatus, 'zipped_list':zipped_list, 
                     'brand_info_link': brand_info_link, 'relative_path_profile': relative_path_profile,
-                    'companyInfo_list': companyInfo_list, 'queried_accuracy': queried_accuracy, 'exactURL':exactURL,
-                    'brand_info':brand_info, 'exactURList':exactURList,})
+                    'companyInfo_list': companyInfo_list, 'exactURL':exactURL, 'quitesimilar':quitesimilar,
+                    'brand_info':brand_info, 'exactURList':exactURList, 'exactsimilar':exactsimilar, 'quitesimilarclassnames':quitesimilarclassnames,
+                    'exactclassnames':exactclassnames,})
 
     else:
         return render(request, 'imagesearch.html',{'media_root': settings.MEDIA_ROOT,
@@ -459,9 +461,72 @@ def topCompanyList(request):
     return render(request, 'topcompany.html', {'random_list':zipList,'topcompanyActive':topcompanyActive,
                                                                'pageTitle':pageTitle, 'pageStatus':pageStatus,})
             
-            
-        	
-         
+from .featureExtraction150 import ExtractFeatureUpload150        
+def testPageFor150(request):
+    obj_150 = ExtractFeatureUpload150()
+    filenameslist = obj_150.filenames
+    relativefilelist = obj_150.fileNamesOfData()
+    category = obj_150.categoryList()
+    wholedataclassnames = obj_150.wholeDataClassNames()
+    return HttpResponse(f'FILE NAME LIST ==> {filenameslist} /n RELATIVE FILE LIST ==> {relativefilelist}  BRAND NAME LIST ==> {category}/n WHOLE DATA CLASSNAME ==> {wholedataclassnames}')
+    
+def searchBigData150(request):
+    searchActive = 'active'
+    pageTitle = 'Image Search'
+    pageStatus = 1
+    
+    upload_dir = Path(str(settings.MEDIA_ROOT)+'/uploads/')
+    root_dir = Path(str(settings.MEDIA_ROOT)+'/Flickr_32')
+    if request.method == 'POST' and request.FILES['imagefile']:
+        image = request.FILES['imagefile']
+        pageStatus = 2
+        # Save query image
+        from io import BytesIO
+        buffer = BytesIO()
+        buffer.write(image.read())
+        buffer.seek(0)
+        img = Image.open(buffer)  # PIL image
+        uploaded_img_path = Path(str(upload_dir) + '/' +datetime.now().isoformat().replace(":", ".") + "_" + image.name)
+        img.save(uploaded_img_path)
+
+        path = uploaded_img_path
+        start = settings.BASE_DIR
+        uploaded_img_rel_path = os.path.relpath(path, start)
+
+        query_image = query_image_obj.extract_features(path)
+        k_neighbours = query_image_obj.knnMethod(query_image)
+        
+        splitClassName = []
+        for filepath in k_neighbours:
+            splitClassText = filepath.split('/')[-2]
+            splitClassName.append(splitClassText)
+             
+        companyInfo_list = company_info_obj.Infolist(splitClassName)
+        brand_info_link = company_info_obj.brand_Info(splitClassName)
+        queried_accuracy = company_info_obj.queriedAccuracy(splitClassName)
+        
+        exactURL = WebScraping.googleScraping(splitClassName[1])
+        brand_info = WebScraping.wikipediaScraping(splitClassName[1])
+        exactURList = WebScraping.getBrandURL(splitClassName[1])
+        
+        zipped_list = zip(k_neighbours, splitClassName)
+        
+        return render(request, 'imagesearch.html', 
+                  {'uploaded_img_path' : uploaded_img_rel_path, 'query_image_feature' : query_image,
+                    'filenames': relfilenames, 'filenames_length': filenames_length, 'k_neighbours':k_neighbours,
+                    'searchActive': searchActive, 'pageTitle': pageTitle, 'pageStatus': pageStatus, 'zipped_list':zipped_list, 
+                    'brand_info_link': brand_info_link, 'relative_path_profile': relative_path_profile,
+                    'companyInfo_list': companyInfo_list, 'queried_accuracy': queried_accuracy, 'exactURL':exactURL,
+                    'brand_info':brand_info, 'exactURList':exactURList,})
+
+    else:
+        return render(request, 'imagesearch.html',{'media_root': settings.MEDIA_ROOT,
+                                              'root_dir': root_dir, 'filenames': relfilenames,
+                                             'filenames_length': filenames_length, 'featureAttr0': featureAttr[0],
+                                               'featureAttr1': featureAttr[1], 'featureAttr2': featureAttr[2],
+                                               'classNames': classNames, 'relative_path_profile': relative_path_profile,
+                                               'searchActive':searchActive, 'pageTitle': pageTitle, 'pageStatus': pageStatus} )
+      
      
     
 	

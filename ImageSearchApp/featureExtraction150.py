@@ -24,15 +24,15 @@ from PIL import Image
 from sklearn.neighbors import NearestNeighbors
 import glob
 
-class ExtractFeatureUpload():
-    feature_list = pickle.load(open('/media/hdd/kalilinux/FinalProject/ImageSearchProject/trained-models/features-flickr-resnet.pickle',
+class ExtractFeatureUpload150():
+    normal_feature_list = pickle.load(open('/media/hdd/kalilinux/FinalProject/ImageSearchProject/trained-models/features-flickr-resnet.pickle',
                                 'rb'))
-    # root_dir_dataset = Path(str(settings.MEDIA_ROOT),'/Flickr_32')
-    
-    root_dir_dataset = '/media/hdd/kalilinux/FinalProject/ImageSearchProject/media/Flickr_32'
+    root_dir_dataset = '/media/hdd/kalilinux/FinalProject/ImageSearchProject/media/train'
+    # root_dir_dataset = Path(str(settings.BASE_DIR),'/media/train/')
     filenames = []
     relFilenames = []
     distances = []
+    
     def __init__(self):
         self.model = ResNet50(weights='imagenet',
                  include_top=False,
@@ -53,8 +53,9 @@ class ExtractFeatureUpload():
         return normalized_features
 
     def fileNamesOfData(self):
+        # abspath = '/media/hdd/kalilinux/FinalProject/ImageSearchProject/media/train/**/*.jpg'
         start = settings.BASE_DIR
-        for filename in sorted(glob.glob('/media/hdd/kalilinux/FinalProject/ImageSearchProject/media/Flickr_32/**/*.jpg', recursive=True)):
+        for filename in sorted(glob.glob('/media/hdd/kalilinux/FinalProject/ImageSearchProject/media/train/**/*.jpg', recursive=True)):
             self.filenames.append(filename)
         
         for imagename in self.filenames:
@@ -62,16 +63,23 @@ class ExtractFeatureUpload():
             self.relFilenames.append(relpath)
         return self.relFilenames
     
-    def classNames(self):
-        classNames = os.listdir('/media/hdd/kalilinux/FinalProject/ImageSearchProject/media/Flickr_32')
+    def categoryList(self):
+        # directory = '/media/hdd/kalilinux/FinalProject/ImageSearchProject/media/train'
+        classNames = os.listdir(self.root_dir_dataset)
         return sorted(classNames)
-    
+    def wholeDataClassNames(self):
+        classnames = []
+        for single in self.relFilenames:
+            splitfile = str(single).split('/')[-2]
+            classnames.append(splitfile)
+        return sorted(classnames)   
+     
     def featureListAttributes(self):
         num_images = len(self.filenames)
         num_of_features_length_of_all = len(self.feature_list)
         num_features_per_image = len(self.feature_list[0])
         return num_images, num_features_per_image, num_of_features_length_of_all
-    fileindex = []
+    similarrelativefileindex = []
     def knnMethod(self, feature_user_image):
         
         neighbors = NearestNeighbors(n_neighbors=15,
@@ -80,27 +88,15 @@ class ExtractFeatureUpload():
         distances, indicess = neighbors.kneighbors([feature_user_image])
         for i in range(0, 14):
             fileIndex = self.relFilenames[indicess[0][i]]
-            self.fileindex.append(fileIndex)
-        return self.fileindex
+            self.similarrelativefileindex.append(fileIndex)
+        return self.similarrelativefileindex
     
-    def findExactSimilar(self, knnIndeces):
-        exactsimilar = []
-        exactclassnames = []
-        quitsimilar = []
-        quitesimilarclassnames = []
-        dictionaryvalues = {'exactsimilar':exactsimilar, 'exactclassnames':exactclassnames,
-                           'quitsimilar':quitsimilar, 'quitesimilarclassnames':quitesimilarclassnames }
-        firstindex = knnIndeces[0]
-        secondindex = str(knnIndeces[1]).split('/')[-2]
-        for img in knnIndeces:
-            if secondindex in img:
-                exactsimilar.append(img)
-                exactclassnames.append(str(img).split('/')[-2])
-            else:
-                quitsimilar.append(img)
-                quitesimilarclassnames.append(str(img).split('/')[-2])
-        return dictionaryvalues
-        
+    def similarImageClassnames(self):
+        brandclasslist = []
+        for blist in self.fileindex:
+           splited = str(blist).split('/')[-2]
+           brandclasslist.append(splited)
+        return brandclasslist
     
     def get_file_list(self):
         extensions = ['.jpg', '.JPG', '.jpeg', '.JPEG', '.png', '.PNG']
@@ -171,5 +167,3 @@ class ExtractFeatureUpload():
             
         return accuracy, precision, recall, f1score
 
-
-        
