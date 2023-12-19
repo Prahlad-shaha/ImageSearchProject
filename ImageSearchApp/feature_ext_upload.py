@@ -23,6 +23,7 @@ import PIL
 from PIL import Image
 from sklearn.neighbors import NearestNeighbors
 import glob
+from django.http import HttpResponse, HttpResponseRedirect
 
 class ExtractFeatureUpload():
     feature_list = pickle.load(open('/media/hdd/kalilinux/FinalProject/ImageSearchProject/trained-models/features-flickr-resnet.pickle',
@@ -71,27 +72,31 @@ class ExtractFeatureUpload():
         num_of_features_length_of_all = len(self.feature_list)
         num_features_per_image = len(self.feature_list[0])
         return num_images, num_features_per_image, num_of_features_length_of_all
-    fileindex = []
+    
     def knnMethod(self, feature_user_image):
-        
+        fileindex = []
         neighbors = NearestNeighbors(n_neighbors=15,
                              algorithm='brute',
                              metric='euclidean').fit(self.feature_list)
         distances, indicess = neighbors.kneighbors([feature_user_image])
         for i in range(0, 14):
             fileIndex = self.relFilenames[indicess[0][i]]
-            self.fileindex.append(fileIndex)
-        return self.fileindex
+            fileindex.append(fileIndex)
+        return fileindex
+    
     
     def findExactSimilar(self, knnIndeces):
-        exactsimilar = []
+        dictionaryvalues = {}
         exactclassnames = []
         quitsimilar = []
+        exactsimilar = []
         quitesimilarclassnames = []
-        dictionaryvalues = {'exactsimilar':exactsimilar, 'exactclassnames':exactclassnames,
-                           'quitsimilar':quitsimilar, 'quitesimilarclassnames':quitesimilarclassnames }
+        dictionaryvalues['exactsimilar'] = exactsimilar
+        dictionaryvalues['exactclassnames'] = exactclassnames
+        dictionaryvalues['quitsimilar'] = quitsimilar
+        dictionaryvalues['quitesimilarclassnames'] = quitesimilarclassnames
         firstindex = knnIndeces[0]
-        secondindex = str(knnIndeces[1]).split('/')[-2]
+        secondindex = str(knnIndeces[0]).split('/')[-2]
         for img in knnIndeces:
             if secondindex in img:
                 exactsimilar.append(img)
@@ -100,8 +105,13 @@ class ExtractFeatureUpload():
                 quitsimilar.append(img)
                 quitesimilarclassnames.append(str(img).split('/')[-2])
         return dictionaryvalues
-        
     
+        
+    def errorsHandling(self):
+        if not self.fileindex:
+            return HttpResponse('Page not found.')
+        else:
+            pass
     def get_file_list(self):
         extensions = ['.jpg', '.JPG', '.jpeg', '.JPEG', '.png', '.PNG']
         file_list = []

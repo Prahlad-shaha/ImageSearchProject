@@ -343,15 +343,24 @@ def invert(request):
 from . essnt_methods import WebScraping
 from .feature_ext_upload import ExtractFeatureUpload
 query_image_obj = ExtractFeatureUpload()
+query_image_obj1 = ExtractFeatureUpload()
 relfilenames = query_image_obj.fileNamesOfData()
 filenames_length = len(relfilenames)
 featureAttr = query_image_obj.featureListAttributes()
 classNames = query_image_obj.fileNamesOfData()
 company_info_obj = CompanyInfo()
+
 def searchFlickrData(request):
+    # query_image_obj1 = ExtractFeatureUpload()
     searchActive = 'active'
     pageTitle = 'Image Search'
     pageStatus = 1
+    mixedimages = []
+    k_neighbours = []
+    quitesimilar = []
+    exactsimilar = []
+    exactclassnames = []
+    quitesimilarclassnames = []
     
     upload_dir = Path(str(settings.MEDIA_ROOT)+'/uploads/')
     root_dir = Path(str(settings.MEDIA_ROOT)+'/Flickr_32')
@@ -371,33 +380,44 @@ def searchFlickrData(request):
         start = settings.BASE_DIR
         uploaded_img_rel_path = os.path.relpath(path, start)
 
-        query_image = query_image_obj.extract_features(path)
-        k_neighbours = query_image_obj.knnMethod(query_image)
-        mixedimages = query_image_obj.findExactSimilar(k_neighbours)
+        query_image = query_image_obj1.extract_features(path)
+        k_neighbours = query_image_obj1.knnMethod(query_image)
+        mixedimages = query_image_obj1.findExactSimilar(k_neighbours)
         exactsimilar = mixedimages['exactsimilar']
         quitesimilar = mixedimages['quitsimilar']
         exactclassnames = mixedimages['exactclassnames']
         quitesimilarclassnames = mixedimages['quitesimilarclassnames']
-        
+        notmatchfound = len(exactsimilar)
+        if notmatchfound < 3:
+            notmatchfound = False
+        else:
+            notmatchfound = True
              
         companyInfo_list = company_info_obj.Infolist(exactclassnames)
         brand_info_link = company_info_obj.brand_Info(exactclassnames)
         # queried_accuracy = company_info_obj.queriedAccuracy(splitClassName)
         
-        exactURL = WebScraping.googleScraping(exactclassnames[1])
-        brand_info = WebScraping.wikipediaScraping(exactclassnames[1])
-        exactURList = WebScraping.getBrandURL(exactclassnames[1])
+        exactURL = WebScraping.googleScraping(exactclassnames[0])
+        brand_info = WebScraping.wikipediaScraping(exactclassnames[0])
+        exactURList = WebScraping.getBrandURL(exactclassnames[0])
         
         zipped_list = zip(exactsimilar, exactclassnames)
-        
+        zipped_list_quitesimilar = zip(quitesimilar, quitesimilarclassnames)
+
         return render(request, 'imagesearch.html', 
                   {'uploaded_img_path' : uploaded_img_rel_path, 'query_image_feature' : query_image,
                     'filenames': relfilenames, 'filenames_length': filenames_length, 'k_neighbours':k_neighbours,
                     'searchActive': searchActive, 'pageTitle': pageTitle, 'pageStatus': pageStatus, 'zipped_list':zipped_list, 
                     'brand_info_link': brand_info_link, 'relative_path_profile': relative_path_profile,
-                    'companyInfo_list': companyInfo_list, 'exactURL':exactURL, 'quitesimilar':quitesimilar,
-                    'brand_info':brand_info, 'exactURList':exactURList, 'exactsimilar':exactsimilar, 'quitesimilarclassnames':quitesimilarclassnames,
-                    'exactclassnames':exactclassnames,})
+                    'companyInfo_list': companyInfo_list, 
+                    'exactURL':exactURL, 
+                    'quitesimilar':quitesimilar,
+                    'brand_info':brand_info, 
+                    'exactURList':exactURList,
+                    'exactsimilar':exactsimilar, 'quitesimilarclassnames':quitesimilarclassnames,
+                    'exactclassnames':exactclassnames,
+                    'zipped_list_quitesimilar':zipped_list_quitesimilar,
+                    'notmatchfound':notmatchfound,})
 
     else:
         return render(request, 'imagesearch.html',{'media_root': settings.MEDIA_ROOT,

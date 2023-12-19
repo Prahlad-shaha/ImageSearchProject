@@ -22,9 +22,13 @@
                   <div class="card-body">
                     <h5 class="card-title border border-top-0 border-left-0 border-right-0">Image Information</h5>
                     <h6 class="card-subtitle mb-2 text-muted">Brand Foundation</h6>
+                    {% if notmatchfound %}
                     <p class="card-text text-justify">{{ brand_info.3 }}</p>
                     <a href="{{exactURL.1}}" class="card-link">Brand Owner</a>
                     <a href="#" class="card-link">Related Images</a>
+                    {% else %}
+                    <p class="card-text text-justify">No Details Found</p>
+                    {% endif %}
                   </div>
                 </div>
                 <!-- {% comment %} end card body-2 {% endcomment %} -->
@@ -34,9 +38,10 @@
           
         <div class="card text-center shadow mb-4">
           <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Similar Images:</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Exact Similar Images:</h6>
           </div>
           <div class="card-columns">
+          {% if notmatchfound %}
           {% for img, imgclass in zipped_list  %}
             <div class="card">
               <img class="card-img-top" src="{{img}}" alt="Card image cap">
@@ -49,8 +54,13 @@
               </div>
             </div>
           {% endfor %}
+          {% else %}
+          <p class="card-text text-justify">No Contents Found</p>
+          {% endif %}
           </div>
         </div>
+        
 
+        
 
   
