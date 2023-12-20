@@ -190,12 +190,13 @@ def rotate(request):
 			})
 	if request.GET.get('degree'):
 		displayFile = request.GET['displayFromPallet']
-		tujuan = settings.BASE_DIR + '/' + displayFile
+		tujuan = Path(str(settings.BASE_DIR) + '/' + displayFile)
 		gambarRotate = Image.open(tujuan)
-		namafilebaru = tujuan[:-4] + "_rotate" + tujuan[-4:]
+		namafilebaru = namafilebaru = tujuan[:-1] + "/rotate/" + tujuan[-1:]
 		# CONVERT MULAI DISINI MENGGUNAKAN FUNGSI rotate()
 		filebaru = gambarRotate.rotate(int(request.GET['degree']), expand=1).save(namafilebaru)
-		displayFileMod = displayFile[:-4] + "_rotate" + displayFile[-4:]
+		# displayFileMod = displayFile[:-4] + "_rotate" + displayFile[-4:]
+		displayFileMod = 'media/'+ esst_methods.getrelativePathMediaTemplate(namafilebaru, settings.MEDIA_ROOT)
 		pageStatus = 3
 		print(displayFile)
 		print(displayFileMod)
@@ -235,12 +236,13 @@ def flip(request):
 	if request.GET.get('leftright'):
 		displayFile = request.GET['displayFromPallet']
 		# tujuan = "/srv/http/djangoproject" + displayFile
-		tujuan = settings.BASE_DIR + '/' + displayFile
+		tujuan = Path(str(settings.BASE_DIR )+ '/' + displayFile)
 		gambarFlip = Image.open(tujuan)
-		namafilebaru = tujuan[:-4] + "_flip" + tujuan[-4:]
+		namafilebaru = namafilebaru = tujuan[:-1] + "/flip/" + tujuan[-1:]
 		# CONVERT MULAI DISINI MENGGUNAKAN FUNGSI transpose()
 		filebaru = gambarFlip.transpose(Image.FLIP_LEFT_RIGHT).save(namafilebaru)
-		displayFileMod = displayFile[:-4] + "_flip" + displayFile[-4:]
+		# displayFileMod = displayFile[:-4] + "_flip" + displayFile[-4:]
+		displayFileMod = 'media/'+ esst_methods.getrelativePathMediaTemplate(namafilebaru, settings.MEDIA_ROOT)
 		print(displayFile)
 		print(displayFileMod)
 		pageStatus = 3
@@ -255,12 +257,13 @@ def flip(request):
 	if request.GET.get('topbottom'):
 		displayFile = request.GET['displayFromPallet']
 		# tujuan = "/srv/http/djangoproject" + displayFile
-		tujuan = settings.BASE_DIR + '/' + displayFile
+		tujuan = Path(str(settings.BASE_DIR) + '/' + displayFile)
 		gambarFlip = Image.open(tujuan)
-		namafilebaru = tujuan[:-4] + "_flip" + tujuan[-4:]
+		namafilebaru = tujuan[:-1] + "/flip/" + tujuan[-1:]
 		# CONVERT MULAI DISINI MENGGUNAKAN FUNGSI transpose()
 		filebaru = gambarFlip.transpose(Image.FLIP_TOP_BOTTOM).save(namafilebaru)
-		displayFileMod = displayFile[:-4] + "_flip" + displayFile[-4:]
+		# displayFileMod = displayFile[:-4] + "_flip" + displayFile[-4:]
+		displayFileMod = 'media/'+ esst_methods.getrelativePathMediaTemplate(namafilebaru, settings.MEDIA_ROOT)
 		pageStatus = 3
 		print(displayFile)
 		print(displayFileMod)
@@ -300,15 +303,18 @@ def crop(request):
 	if request.GET.get('x'):
 		displayFile = request.GET['displayFromPallet']
 		# tujuan = "/srv/http/djangoproject" + displayFile
-		tujuan = settings.BASE_DIR + '/' + displayFile
+		tujuan = Path(str(settings.BASE_DIR )+ '/' + displayFile)
 		gambarCrop = Image.open(tujuan)
-		namafilebaru = tujuan[:-4] + "_crop" + tujuan[-4:]
+		namafilebaru = tujuan[:-1] + "/crop/" + tujuan[-1:]
 		# CONVERT MULAI DISINI MENGGUNAKAN FUNGSI crop()
 		filebaru = gambarCrop.crop((float(request.GET['x']), float(request.GET['y']), float(request.GET['w'])+float(request.GET['x']), float(request.GET['h'])+float(request.GET['y'])) ).save(namafilebaru)
-		displayFileMod = displayFile[:-4] + "_crop" + displayFile[-4:]
+		# displayFileMod = displayFile[:-5] + "_crop" + displayFile[-4:]
+		displayFileMod = 'media/'+ esst_methods.getrelativePathMediaTemplate(namafilebaru, settings.MEDIA_ROOT)
 		pageStatus = 3
-		print(displayFile)
-		print(displayFileMod)
+		# print('file path 1', displayFile)
+		# print('file path 2', displayFileMod)
+		# print('file tujuan', tujuan)
+		# print('file path 2', namafilebaru)
 		return render(request, 'crop.html', {
 			'displayFile':displayFile,
 			'displayFileMod':displayFileMod,
